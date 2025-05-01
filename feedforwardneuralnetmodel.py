@@ -32,7 +32,7 @@ class FeedforwardNeuralNetModel (nn.module):
 
         # Output layer
         # Linear function 3 (readout): hidden_dim --> output_dim
-        self.fc6 = nn.Linear(hidden_dim, output_dim)
+        self.fc3 = nn.Linear(hidden_dim, output_dim)
     
     def forward(self, x):
         # Linear function 1
@@ -46,5 +46,5 @@ class FeedforwardNeuralNetModel (nn.module):
         out = self.relu2(out)
 
         # Linear function 3 (readout)
-        out = self.fc6(x)
+        out = self.fc3(x)
         return out
