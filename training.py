@@ -36,12 +36,12 @@ def compute_acc(logits, expected):
     pred = logits.argmax(dim=1)
     return (pred == expected).type(torch.float).mean()
 
-def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batch_size):
+def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batchSize):
     # Required hyperparameters:
-    # --------------------------Optimizer
-    # --------------------------Cost function/Loss function.
-    # --------------------------Batch size
-    # --------------------------CLR (Cyclical Learning Rate scheduler)
+    # --------------------------Optimizer-------------------------------> Adam Optimizer
+    # --------------------------Cost function/Loss function-------------> Cross-Entropy Loss
+    # --------------------------Batch size------------------------------> Variable (while optimising)
+    # --------------------------CLR (Cyclical Learning Rate scheduler)--> base_lr and max_lr variable (while optimising)
 
     # Implements early stopping if validation accuracy stops decreasing.
 
@@ -62,7 +62,7 @@ def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batch
 
     for n_epoch in range(max_epoch):
         model.train()
-        loader = data.DataLoader(mnist_train, batch_size=batch_size, shuffle=True, num_workers=1)
+        loader = data.DataLoader(mnist_train, batch_size=batchSize, shuffle=True, num_workers=1)
         epoch_loss = []
         for X_batch, y_batch in loader:
             opt.zero_grad()
@@ -91,8 +91,6 @@ def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batch
     model.load_state_dict(best_model)
 
     return model, best_acc, best_epoch, train_loss, validation_acc
-
-
 
 def flatten(inp):
     return inp.reshape(-1)
