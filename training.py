@@ -17,6 +17,7 @@ import torchvision.transforms as transforms
 from torchvision.datasets import MNIST
 
 def loadAndProcessData ():
+    # Load the fashionMNIST dataset and split into training, validation and test sets.
     target_directory = "FashionMNIST"
     DATA_DIR = '.'
     download_dataset = False
@@ -89,7 +90,9 @@ def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batch
 
     model.load_state_dict(best_model)
 
-    return model, best_acc, best_epoch
+    return model, best_acc, best_epoch, train_loss, validation_acc
+
+
 
 def flatten(inp):
     return inp.reshape(-1)

@@ -18,41 +18,19 @@ from torchvision.datasets import MNIST
 
 from pathlib import Path
 
+def main():
 
-target_directory = "FashionMNIST"
+    target_directory = "FashionMNIST"
 
-DATA_DIR = '.'
-download_dataset = False
+    DATA_DIR = '.'
+    download_dataset = False
 
-# fashion_mnist_real_train = datasets.FashionMNIST(DATA_DIR, train=True, download=download_dataset)
-# fashion_mnist_test = datasets.FashionMNIST(DATA_DIR, train=False, download=download_dataset)
+    def flatten(inp):
+        return inp.reshape(-1)
 
-# print(len(fashion_mnist_real_train))
-# print(len(fashion_mnist_test))
+    transform = transforms.Compose([transforms.ToTensor()])
 
-def flatten(inp):
-    return inp.reshape(-1)
+    fashion_mnist_real_train = datasets.FashionMNIST(DATA_DIR, train=True, download=download_dataset, transform=transform)
+    fashion_mnist_test = datasets.FashionMNIST(DATA_DIR, train=False, download=download_dataset, transform=transform)
 
-transform = transforms.Compose([transforms.ToTensor()])
-
-fashion_mnist_real_train = datasets.FashionMNIST(DATA_DIR, train=True, download=download_dataset, transform=transform)
-fashion_mnist_test = datasets.FashionMNIST(DATA_DIR, train=False, download=download_dataset, transform=transform)
-
-fashion_mnist_train, fashion_mnist_validation = data.random_split(fashion_mnist_real_train, (48000, 12000))
-
-train_loader = data.DataLoader(fashion_mnist_train, batch_size = sample_batch_size, shuffle = True, num_workers = 1)
-val_loader = data.DataLoader(fashion_mnist_validation, batch_size = len(fashion_mnist_validation), shuffle = False)
-
-
-
-
-
-# Print the shape of the data and targets
-# print(fashion_mnist_real_train.data.shape)
-# print(fashion_mnist_real_train.targets.shape)
-
-# print(fashion_mnist_test.data.shape)
-# print(fashion_mnist_test.targets.shape)
-
-# print(len(fashion_mnist_train), len(fashion_mnist_validation))
-
+    fashion_mnist_train, fashion_mnist_validation = data.random_split(fashion_mnist_real_train, (48000, 12000))
