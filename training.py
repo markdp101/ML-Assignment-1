@@ -1,7 +1,7 @@
 # Mark Du Preez - DPRMAR021
 # CSC3022F 2025
 # Machine Learning Assignment 1
-# Code apapted from slides and code provided by Francois Meyer (Lecturer)
+# Code adapted from slides and code provided by Francois Meyer (Lecturer)
 
 import matplotlib
 import numpy as np
@@ -90,7 +90,7 @@ def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batch
 
     model.load_state_dict(best_model)
 
-    return model, best_acc, best_epoch, train_loss, validation_acc
+    return model, best_acc, best_epoch, train_loss, validation_acc, model
 
 def flatten(inp):
     return inp.reshape(-1)

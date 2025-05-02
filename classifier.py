@@ -1,7 +1,7 @@
 # Mark Du Preez - DPRMAR021
 # CSC3022F 2025
 # Machine Learning Assignment 1
-# Code apapted from slides and code provided by Francois Meyer (Lecturer)
+# Code adapted from slides and code provided by Francois Meyer (Lecturer)
 
 import matplotlib
 import numpy as np
@@ -18,6 +18,7 @@ from torchvision.datasets import FashionMNIST
 
 import textwrap
 import copy
+import pickle
 
 from training import *
 from feedforwardneuralnetmodel import *
@@ -40,9 +41,9 @@ def main():
 
     params = {
             'learning_rate': [ (1e-4, 5e-3), (1e-3, 5e-3)],
-            'hidden_dims': [(512, 256), (256, 128)],
+            'hidden_dims': [(512, 256), (256, 128),(128, 64)],
             'probability': [0.2, 0.5],
-            'batch_size': [256, 512, 1024]
+            'batch_size': [256, 512]
     }
 
     combination = 0
@@ -93,7 +94,7 @@ def main():
                     optimizer = optim.Adam(model.parameters())
                     scheduler = optim.lr_scheduler.CyclicLR(optimizer, base_lr=baseLearningRate, max_lr=maxLearningRate)
 
-                    model, accuracy, epochs, trainingLoss, validationAccuracy = trainModel(model, optimizer, cost, scheduler, fashion_mnist_train, fashion_mnist_validation, batch_size)
+                    model, accuracy, epochs, trainingLoss, validationAccuracy, trainedModel = trainModel(model, optimizer, cost, scheduler, fashion_mnist_train, fashion_mnist_validation, batch_size)
                     epochs = list(range(epochs+1))
 
                     trainingAccuracies[combination] = copy.deepcopy(accuracy)
@@ -106,6 +107,9 @@ def main():
                     batchSizes.append(copy.deepcopy(batch_size))
 
                     plotBatchSizeAccuracy(epochs, validationAccuracy, combination, learning_rate, hidden_dims, probability, batch_size)
+
+                    with open('model' + str(combination) + '.pkl', 'wb') as f:
+                        pickle.dump(trainedModel, f)
 
                     combination += 1
                 

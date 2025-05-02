@@ -1,7 +1,7 @@
 # Mark Du Preez - DPRMAR021
 # CSC3022F 2025
 # Machine Learning Assignment 1
-# Code apapted from slides provided by Francois Meyer (Lecturer)
+# Code adapted from slides provided by Francois Meyer (Lecturer)
 
 # FASHION MNIST Classifier
 
@@ -19,7 +19,7 @@ class FeedforwardNeuralNetModel (nn.Module):
     # Starting with 1 hidden layer then will compare the best model accuracy based on other hyperparameters 
     # then add another input layer than observe the validation and accuracy performance over training epochs (via graphs) to 
     # understand optimal number of hidden layers.
-    def __init__(self, num_hidden_layers, hidden_dim,  hidden_dim_2, probability,):
+    def __init__(self, num_hidden_layers, hidden_dim,  hidden_dim_2, probability):
         super(FeedforwardNeuralNetModel, self).__init__()
 
         self.num_hidden_layers = num_hidden_layers
@@ -46,7 +46,7 @@ class FeedforwardNeuralNetModel (nn.Module):
         else:
             # Output layer
             # Linear function 2 (readout): hidden_dim --> output_dim
-            self.fc2 = nn.Linear(hidden_dim_2, 10)
+            self.fc2 = nn.Linear(hidden_dim, 10)
     
     def forward(self, x):
         # Flatten input.
@@ -62,8 +62,9 @@ class FeedforwardNeuralNetModel (nn.Module):
         # out = self.relu2(out)
 
         if (self.num_hidden_layers == 2):
-            out = self.fc2(out)
             # Monitor this extra dropout
+            out = self.dropout1(out)
+            out = self.fc2(out)
             out = self.relu2(out)
             out = self.dropout2(out)
             out = self.fc3(out)
