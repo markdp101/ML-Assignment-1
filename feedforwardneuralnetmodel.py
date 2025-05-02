@@ -19,13 +19,16 @@ class FeedforwardNeuralNetModel (nn.Module):
     # Starting with 1 hidden layer then will compare the best model accuracy based on other hyperparameters 
     # then add another input layer than observe the validation and accuracy performance over training epochs (via graphs) to 
     # understand optimal number of hidden layers.
-    def __init__(self, num_hidden_layers, hidden_dim,  hidden_dim_2, probability):
+    def __init__(self, num_hidden_layers, hidden_dim,  hidden_dim_2, probability, bnMomentum):
         super(FeedforwardNeuralNetModel, self).__init__()
 
         self.num_hidden_layers = num_hidden_layers
         # Input layer
         # Linear function 1: input_dim --> hidden_dim
         self.fc1 = nn.Linear(784, hidden_dim)
+
+        self.bn1 = nn.BatchNorm1d(hidden_dim, momentum=bnMomentum)
+
         # Non-linearity 1 (Come back and decide on activation function with justification)
         self.relu1 = nn.ReLU()
 
@@ -53,6 +56,9 @@ class FeedforwardNeuralNetModel (nn.Module):
         x = x.view(x.size(0), -1)
         # Linear function 1
         out = self.fc1(x)
+
+        out = self.bn1(out)
+        
         # Non-linearity 1
         out = self.relu1(out)
 

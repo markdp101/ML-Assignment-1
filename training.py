@@ -31,6 +31,10 @@ def loadAndProcessData ():
 
     return fashion_mnist_train, fashion_mnist_validation, fashion_mnist_test
 
+def getTestDataLoader(test_dataset, batch_size):
+    test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False)
+    return test_loader
+
 # Helper function to compute accuracy.
 def compute_acc(logits, expected):
     pred = logits.argmax(dim=1)
@@ -42,6 +46,7 @@ def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batch
     # --------------------------Cost function/Loss function-------------> Cross-Entropy Loss
     # --------------------------Batch size------------------------------> Variable (while optimising)
     # --------------------------CLR (Cyclical Learning Rate scheduler)--> base_lr and max_lr variable (while optimising)
+    # --------------------------Patience (for early stopping)-----------> 15
 
     # Implements early stopping if validation accuracy stops decreasing.
 
@@ -58,7 +63,7 @@ def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batch
     max_epoch = 100
 
     # The maximum number of epochs permitted with no improvement in validation accuracy.
-    no_improvement = 5
+    no_improvement = 15
 
     for n_epoch in range(max_epoch):
         model.train()
