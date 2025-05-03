@@ -37,9 +37,12 @@ def main():
     fashion_mnist_train, fashion_mnist_validation = data.random_split(fashion_mnist_real_train, (48000, 12000))
 
     params = {
-            'momentum': [0.1],
-            'learning_rate': [(1e-6, 5e-3), (1e-5, 5e-3), (1e-4, 5e-3)],
-            'hidden_dims': [(1024, 512), (512, 256), (256, 128)],
+            'momentum': [0.1, 0.3, 0.5],
+            #'learning_rate': [(1e-6, 5e-3), (1e-5, 5e-3), (1e-4, 5e-3)],
+            # 'learning_rate': [(1e-6, 5e-3), (1e-5, 5e-3), (1e-5, 0.01), (1e-6, 0.01)],
+            'learning_rate': [(1e-4, 5e-3), (1e-6, 5e-3), (1e-5, 5e-3)],
+            # 'hidden_dims': [(1024, 512, 256), (512, 256, 128), (256, 128, 64)],
+            'hidden_dims': [(512, 256), (512, 256, 128)],
             'probability': [0.2],
             'batch_size': [(128, 10)]
     }
@@ -95,7 +98,6 @@ def main():
                     # batchSizes = []
 
                     for batchSize in params['batch_size']:
-                        hidden_dim1, hidden_dim2 = hidden_dims
                         baseLearningRate, maxLearningRate = learning_rate
 
                         print("Hidden dims:", str(hidden_dims))
@@ -105,8 +107,11 @@ def main():
                         print("Momentum:", str(momentum))
 
                         batch_size, improvementEpochs= batchSize
+                        if (len(hidden_dims)==3):
+                            model = FeedforwardNeuralNetModel(3, probability, momentum, hidden_dims[0], hidden_dims[1], hidden_dims[2])
+                        else:
+                            model = FeedforwardNeuralNetModel(2, probability, momentum, hidden_dims[0], hidden_dims[1])
 
-                        model = FeedforwardNeuralNetModel(2, hidden_dim1, hidden_dim2, probability, momentum)
                         cost = torch.nn.CrossEntropyLoss()
                         # optimizer = optim.Adam(model.parameters(), weight_decay=weightDecay)
                         optimizer = optim.Adam(model.parameters())
