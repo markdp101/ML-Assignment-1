@@ -14,7 +14,7 @@ import torch.utils.data as data
 from torchvision import datasets
 
 import torchvision.transforms as transforms
-from torchvision.datasets import MNIST
+from torchvision.datasets import FashionMNIST
 
 def loadAndProcessData ():
     # Load the fashionMNIST dataset and split into training, validation and test sets.
@@ -40,7 +40,7 @@ def compute_acc(logits, expected):
     pred = logits.argmax(dim=1)
     return (pred == expected).type(torch.float).mean()
 
-def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batchSize):
+def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batchSize, improvementEpochs):
     # Required hyperparameters:
     # --------------------------Optimizer-------------------------------> Adam Optimizer
     # --------------------------Cost function/Loss function-------------> Cross-Entropy Loss
@@ -63,7 +63,7 @@ def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batch
     max_epoch = 100
 
     # The maximum number of epochs permitted with no improvement in validation accuracy.
-    no_improvement = 15
+    no_improvement = improvementEpochs
 
     for n_epoch in range(max_epoch):
         model.train()
