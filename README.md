@@ -9,31 +9,25 @@ To run the main jpeg image classifier for FASHION MNIST using a feed forward neu
     Option 1: Train a new model with the same optimal hyperparameters to classify JPEG images (1)
     Option 2: Load up the pre-trained model to classify JPEG images (2)
     1
-    New best epoch  0 acc tensor(0.8356)
-    New best epoch  1 acc tensor(0.8544)
-    New best epoch  3 acc tensor(0.8612)
-    New best epoch  4 acc tensor(0.8713)
-    New best epoch  6 acc tensor(0.8802)
-    New best epoch  11 acc tensor(0.8844)
-    New best epoch  12 acc tensor(0.8891)
-    New best epoch  13 acc tensor(0.8903)
-    New best epoch  14 acc tensor(0.8905)
-    New best epoch  15 acc tensor(0.8957)
-    New best epoch  16 acc tensor(0.8958)
-    New best epoch  17 acc tensor(0.8972)
-    New best epoch  18 acc tensor(0.8989)
-    New best epoch  19 acc tensor(0.9006)
-    New best epoch  20 acc tensor(0.9018)
-    New best epoch  22 acc tensor(0.9019)
-    New best epoch  36 acc tensor(0.9020)
-    New best epoch  37 acc tensor(0.9022)
-    New best epoch  38 acc tensor(0.9060)
-    New best epoch  40 acc tensor(0.9062)
-    New best epoch  41 acc tensor(0.9075)
-    New best epoch  60 acc tensor(0.9105)
-    New best epoch  63 acc tensor(0.9106)
-    New best epoch  66 acc tensor(0.9109)
-    New best epoch  84 acc tensor(0.9118)
+    Epoch 0 : loss( tensor(1.1181) )
+    Epoch 0 : val_acc( tensor(0.8298) )
+    New best epoch  0 acc tensor(0.8298)
+    Epoch 1 : loss( tensor(0.5001) )
+    Epoch 1 : val_acc( tensor(0.8489) )
+    New best epoch  1 acc tensor(0.8489)
+    Epoch 2 : loss( tensor(0.4393) )
+    Epoch 2 : val_acc( tensor(0.8512) )
+    New best epoch  2 acc tensor(0.8512)
+    Epoch 3 : loss( tensor(0.4113) )
+    Epoch 3 : val_acc( tensor(0.8659) )
+    New best epoch  3 acc tensor(0.8659)
+    ...
+    Epoch 59 : loss( tensor(0.1514) )
+    Epoch 59 : val_acc( tensor(0.9026) )
+    Epoch 60 : loss( tensor(0.1393) )
+    Epoch 60 : val_acc( tensor(0.9054) )
+    No improvement for 20 epochs
+    Test Accuracy of the model on the 10000 test images: 90.16 %
     Please enter a filepath:
     C:\Users\markd\OneDrive\Desktop\ML Assignments\ML Assignment 1\fashion-jpegs\bag.jpg  
     Classifier: Bag
@@ -56,3 +50,5 @@ To run the program used to find the optimal set of hyperparameters -> cyclical l
                The graphs will be outputted to JPEG images.
                Additionally, the program also saves each trained model to a pickle file for later use if needed preventing the need to retrain models which is computationally expensive.
     WARNING: RUN TIME WILL BE EXTREMELY LONG AS THE GRID SEARCH CONSISTS OF 80 DIFFERENT COMBINATIONS OF HYPERPARAMETERS USED TO TRAIN A MODEL.
+
+Additional Notes: training.py encapsulates all the functions involved in training a neural network and feedforwardneuralnetmodel.py contains the feed-forward neural network class with its appropriate constructor and forward pass function defined.

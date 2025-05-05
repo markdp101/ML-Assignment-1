@@ -13,8 +13,9 @@ from PIL import Image
 
 import pickle
 
-from training import trainModel
+from training import trainModel, getTestDataLoader
 from feedforwardneuralnetmodel import FeedforwardNeuralNetModel
+from optimize import getTestAccuracy
 
 def main():
     classificationModel = None
@@ -63,6 +64,10 @@ def main():
 
         # Train the model and return the model, final accuracy, num epochs and list of validation accuracies for each epoch.
         accuracy, epochs, trainingLoss, validationAccuracy, trainedModel = trainModel(model, optimizer, cost, scheduler, trainDataset, validationDataset, batchSize, numEpochs)
+
+        testLoader = getTestDataLoader(testDataset, batchSize)
+
+        getTestAccuracy(trainedModel, testLoader)
 
         # Store the trained model for later classification.
         classificationModel = trainedModel
