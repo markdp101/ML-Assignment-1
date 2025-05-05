@@ -2,6 +2,7 @@
 # CSC3022F 2025
 # Machine Learning Assignment 1
 # Code adapted from slides and code provided by Francois Meyer (Lecturer)
+# Contains the methods for training a FFNN model.
 
 import matplotlib
 import numpy as np
@@ -46,7 +47,7 @@ def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batch
     # --------------------------Cost function/Loss function-------------> Cross-Entropy Loss
     # --------------------------Batch size------------------------------> Variable (while optimising)
     # --------------------------CLR (Cyclical Learning Rate scheduler)--> base_lr and max_lr variable (while optimising)
-    # --------------------------Patience (for early stopping)-----------> 15
+    # --------------------------Patience (for early stopping)-----------> 20
 
     # Implements early stopping if validation accuracy stops decreasing.
 
@@ -65,6 +66,7 @@ def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batch
     # The maximum number of epochs permitted with no improvement in validation accuracy.
     no_improvement = improvementEpochs
 
+    # Training the model for a certain number of epochs or stops when theres been a certain number of epochs without improvement.
     for n_epoch in range(max_epoch):
         model.train()
         loader = data.DataLoader(mnist_train, batch_size=batchSize, shuffle=True, num_workers=1)
@@ -95,7 +97,7 @@ def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batch
 
     model.load_state_dict(best_model)
 
-    return model, best_acc, best_epoch, train_loss, validation_acc, model
+    return best_acc, best_epoch, train_loss, validation_acc, model
 
 def flatten(inp):
     return inp.reshape(-1)
