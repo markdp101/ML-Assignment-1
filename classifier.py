@@ -37,19 +37,40 @@ def main():
     fashion_mnist_train, fashion_mnist_validation = data.random_split(fashion_mnist_real_train, (48000, 12000))
 
     params = {
-            'momentum': [0.1, 0.3, 0.5],
-            #'learning_rate': [(1e-6, 5e-3), (1e-5, 5e-3), (1e-4, 5e-3)],
-            # 'learning_rate': [(1e-6, 5e-3), (1e-5, 5e-3), (1e-5, 0.01), (1e-6, 0.01)],
-            'learning_rate': [(1e-4, 5e-3), (1e-6, 5e-3), (1e-5, 5e-3)],
-            # 'hidden_dims': [(1024, 512, 256), (512, 256, 128), (256, 128, 64)],
-            'hidden_dims': [(512, 256), (512, 256, 128)],
-            'probability': [0.2],
-            'batch_size': [(128, 10)]
+            # 'momentum': [0.1, 0.3, 0.5],
+            # #'learning_rate': [(1e-6, 5e-3), (1e-5, 5e-3), (1e-4, 5e-3)],
+            # # 'learning_rate': [(1e-6, 5e-3), (1e-5, 5e-3), (1e-5, 0.01), (1e-6, 0.01)],
+            # # 'learning_rate': [(1e-4, 5e-3), (1e-6, 5e-3), (1e-5, 5e-3)],
+            # 'learning_rate': [(1e-3, 5e-3)],
+            # # 'hidden_dims': [(1024, 512, 256), (512, 256, 128), (256, 128, 64)],
+            # 'hidden_dims': [(512, 256), (512, 256, 128)],
+            # 'probability': [0.2],
+            # 'batch_size': [(128, 10)]
+
+            # 'hidden_dims': [(512, 256, 128), (512, 256)],
+            # 'learning_rate': [(0.001, 0.003), (0.002, 0.006)],  # narrower around the best
+            # 'probability': [0.2, 0.25],  # test slightly higher dropout for regularization
+            # 'batch_size': [(128, 10)],  # drop 10, not competitive
+            # 'momentum': [0.3, 0.4, 0.5]  # keep exploring higher momentum
+
+            # 'hidden_dims': [(512, 256, 128),(512, 256)],
+            # 'learning_rate': [(1e-6, 5e-3), (0.001, 0.005), (1e-7, 5e-3), (1e-4, 5e-3)],  # narrower around the best
+            # 'probability': [0.2, 0.3, 0.5],  # test slightly higher dropout for regularization
+            # 'batch_size': [(128, 10)],  # drop 10, not competitive
+            # 'momentum': [0.1, 0.3, 0.4, 0.5]  # keep exploring higher momentum
+
+            'hidden_dims': [(512, 256)],
+            'learning_rate': [(1e-9, 5e-4), (2.5e-8, 5e-3), (5e-8, 5e-3), (1e-7, 5), (2.5e-4, 5e-3)],  # narrower around the best
+            'probability': [0.2, 0.3, 0.4, 0.5],  # test slightly higher dropout for regularization
+            'batch_size': [(256, 20)],  # drop 10, not competitive
+            'momentum': [0.3, 0.2, 0.1, 0.4]  # keep exploring higher momentum
+    
     }
 
     combination = 0
     validations = []
     trainingAccuracies = []
+    testAccuracies = []
     hyperparameterCombinations = []
 
     momentumValidations = []
@@ -119,7 +140,7 @@ def main():
 
                         model, accuracy, epochs, trainingLoss, validationAccuracy, trainedModel = trainModel(model, optimizer, cost, scheduler, fashion_mnist_train, fashion_mnist_validation, batch_size, improvementEpochs)
                         test_loader = getTestDataLoader(fashion_mnist_test, batch_size)
-                        getTestAccuracy(trainedModel, test_loader)
+                        testAccuracies.append(getTestAccuracy(trainedModel, test_loader))
                         epochs = list(range(epochs+1))
 
                         trainingAccuracies.append(copy.deepcopy(accuracy))
@@ -187,8 +208,8 @@ def main():
 
     plotMomentumAccuracies(momentumEpochs, momentumValidations, numMomentumIterations, combinationsListListListList)
 
-    highestAccuracy = np.max(trainingAccuracies)
-    index = np.argmax(trainingAccuracies)
+    highestAccuracy = np.max(testAccuracies)
+    index = np.argmax(testAccuracies)
 
     configuration = hyperparameterCombinations[index]
 
@@ -198,6 +219,7 @@ def main():
     print("Number of neurons in consecutive hidden layers:", str(configuration[2]))
     print("Learning rate for CLR Scheduling:", str(configuration[3]))
     print("Momentum:", str(configuration[4]))
+    print("Test Accuracy:", str(testAccuracies[index]))
 
 def plotBatchSizeAccuracy(epochs, validationAccuracies, combination, momentum, learning_rate, hidden_dims, probability, batch_size):
     plt.figure(figsize=(10, 6))
@@ -356,6 +378,8 @@ def getTestAccuracy(model, test_loader):
             correct += (predicted == labels).sum().item()  # Compare predicted classes with true labels
 
     print('Test Accuracy of the model on the 10000 test images: {} %'.format(100 * correct / total))    
+
+    return (100 * correct / total)
 
 if __name__ == "__main__":
     main()
