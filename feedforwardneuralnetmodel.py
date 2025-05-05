@@ -19,10 +19,13 @@ class FeedforwardNeuralNetModel (nn.Module):
     # Starting with 1 hidden layer then will compare the best model accuracy based on other hyperparameters 
     # then add another input layer than observe the validation and accuracy performance over training epochs (via graphs) to 
     # understand optimal number of hidden layers.
-    def __init__(self, num_hidden_layers, hidden_dim,  hidden_dim_2, probability, bnMomentum):
+    def __init__(self, num_hidden_layers, probability, bnMomentum, hidden_dim,  hidden_dim_2, hidden_dim_3=0):
         super(FeedforwardNeuralNetModel, self).__init__()
 
         self.num_hidden_layers = num_hidden_layers
+
+
+        # Input dim ----> Hidden_dim_1
         # Input layer
         # Linear function 1: input_dim --> hidden_dim
         self.fc1 = nn.Linear(784, hidden_dim)
@@ -35,21 +38,28 @@ class FeedforwardNeuralNetModel (nn.Module):
         # Implementing regularization using a dropout layer.
         self.dropout1 = nn.Dropout(p = probability)
 
-        if (num_hidden_layers == 2):
-            self.fc2 = nn.Linear(hidden_dim, hidden_dim_2)
-            self.relu2 = nn.ReLU()
+        # Hidden_dim_1 ---> Hidden_dim_2
 
-            # Monitor this extra dropout layer.
-            # Implementing regularization using a dropout layer.
-            self.dropout2 = nn.Dropout(p = probability)
+        self.fc2 = nn.Linear(hidden_dim, hidden_dim_2)
 
-            # Output layer
-            # Linear function 3 (readout): hidden_dim --> output_dim
-            self.fc3 = nn.Linear(hidden_dim_2, 10)
+        self.bn2 = nn.BatchNorm1d(hidden_dim_2, momentum=bnMomentum)
+
+        self.relu2 = nn.ReLU()
+
+        self.dropout2 = nn.Dropout(p = probability)
+
+
+
+        # Hidden_dim_2 --> Hidden_dim_3
+
+        if (self.num_hidden_layers >= 3):
+            self.fc3 = nn.Linear(hidden_dim_2, hidden_dim_3)
+            self.bn3 = nn.BatchNorm1d(hidden_dim_3, momentum=bnMomentum)
+            self.relu3 = nn.ReLU()
+            self.dropout3 = nn.Dropout(p=probability)
+            self.fc4 = nn.Linear(hidden_dim_3, 10)
         else:
-            # Output layer
-            # Linear function 2 (readout): hidden_dim --> output_dim
-            self.fc2 = nn.Linear(hidden_dim, 10)
+            self.fc3 = nn.Linear(hidden_dim_2, 10)
     
     def forward(self, x):
         # Flatten input.
@@ -62,23 +72,19 @@ class FeedforwardNeuralNetModel (nn.Module):
         # Non-linearity 1
         out = self.relu1(out)
 
-        # # Linear function 2
-        # out = self.fc2(x)
-        # # Non-linearity 2
-        # out = self.relu2(out)
+        out = self.dropout1(out)
+        out = self.fc2(out)
+        out = self.bn2(out)
+        out = self.relu2(out)
+        out = self.dropout2(out)
 
-        if (self.num_hidden_layers == 2):
-            # Monitor this extra dropout
-            out = self.dropout1(out)
-            out = self.fc2(out)
-            out = self.relu2(out)
-            out = self.dropout2(out)
+        if (self.num_hidden_layers >= 3):
             out = self.fc3(out)
+            out = self.bn3(out)
+            out = self.relu3(out)
+            out = self.dropout3(out)
+            out = self.fc4(out)
         else:
-            # Dropout 1
-            out = self.dropout1(out)
-
-            # Linear function 3 (readout)
-            out = self.fc2(out)
+            out = self.fc3(out)
 
         return out
