@@ -4,18 +4,11 @@
 # Code adapted from slides and code provided by Francois Meyer (Lecturer)
 # Contains the methods for training a FFNN model.
 
-import matplotlib
-import numpy as np
-import matplotlib.pyplot as plt
-
 import torch
-import torch.nn as nn
-import torch.optim as optim
 import torch.utils.data as data
 from torchvision import datasets
 
 import torchvision.transforms as transforms
-from torchvision.datasets import FashionMNIST
 
 def loadAndProcessData ():
     # Load the fashionMNIST dataset and split into training, validation and test sets.
@@ -32,6 +25,7 @@ def loadAndProcessData ():
 
     return fashion_mnist_train, fashion_mnist_validation, fashion_mnist_test
 
+# Get the data loader for the test dataset with a specific batch size.
 def getTestDataLoader(test_dataset, batch_size):
     test_loader = torch.utils.data.DataLoader(dataset=test_dataset, batch_size=batch_size, shuffle=False)
     return test_loader
@@ -94,10 +88,9 @@ def trainModel(model, opt, cost, scheduler, mnist_train, mnist_validation, batch
         if best_epoch + no_improvement <= n_epoch:
             print("No improvement for", no_improvement, "epochs")
             break
-
+    
+    # Load up the model with best validation accuracy
     model.load_state_dict(best_model)
 
+    # Return the best validation accuracy, number of epochs, training loss array, validation accuracy array and the trained model
     return best_acc, best_epoch, train_loss, validation_acc, model
-
-def flatten(inp):
-    return inp.reshape(-1)

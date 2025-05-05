@@ -8,7 +8,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import torch
-import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data as data
 from torchvision import datasets
@@ -21,6 +20,7 @@ import pickle
 
 from training import *
 from feedforwardneuralnetmodel import *
+
 def main():
     # Load the datasets. Test and training datasets of FASHIONMNIST.
 
@@ -87,7 +87,7 @@ def main():
                     for batchSize in params['batch_size']:
                         baseLearningRate, maxLearningRate = learning_rate
 
-                        # Print the hidden parameters to terminal.
+                        # Print the hyperparameters of current combination to terminal.
 
                         print("Hidden dims:", str(hidden_dims))
                         print("Learning Rates:", str(learning_rate))
@@ -96,8 +96,8 @@ def main():
                         print("Momentum:", str(momentum))
 
                         # Extract the batch size and max number of epochs without improvement.
-
                         batch_size, improvementEpochs= batchSize
+
                         # Different initializations based on number of hidden layers.
                         if (len(hidden_dims)==3):
                             model = FeedforwardNeuralNetModel(3, probability, momentum, hidden_dims[0], hidden_dims[1], hidden_dims[2])
@@ -134,7 +134,6 @@ def main():
                         combinations.append(copy.deepcopy(combination))
 
                         # Plot the validation accuracy vs number of epochs for a specific combination.
-
                         plotBatchSizeAccuracy(epochs, validationAccuracy, combination, momentum, learning_rate, hidden_dims, probability, batch_size)
 
                         # Store the model to a pickle file to be used later.
@@ -159,9 +158,6 @@ def main():
                 hiddenDimsValidations.append(copy.deepcopy(dropoutValidations))
                 hiddenDimsEpochs.append(copy.deepcopy(dropoutEpochs))
                 combinationsListList.append(copy.deepcopy(combinationsList))
-                # dropoutsList.append(copy.deepcopy(dropouts))
-                # hiddenDims.append(copy.deepcopy(hidden_dims))
-                # batchSizesList.append(copy.deepcopy(batch_sizes))
             
             # Plot the accuracies for different hidden layer configurations.
             plotHiddenDimsAccuracies(hiddenDimsEpochs, hiddenDimsValidations, hiddenDimIterations, momentum, learning_rate, combinationsListList)
